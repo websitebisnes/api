@@ -14,6 +14,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::resource('products', 'ProductController');
+    Route::delete('products/delete/bulk', 'ProductController@destroy_bulk');
+
+    Route::resource('categories', 'CategoryController');
+    Route::delete('categories/delete/bulk', 'CategoryController@destroy_bulk');
+
+    Route::resource('medias', 'MediaController');
+    Route::delete('medias/delete/bulk', 'MediaController@destroy_bulk');
+
+    Route::resource('customers', 'CustomerController');
+    Route::delete('customers/delete/bulk', 'CustomerController@destroy_bulk');
 });

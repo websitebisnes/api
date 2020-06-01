@@ -13,14 +13,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Auth::routes();
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/home', 'HomeController@index')->name('home');
 
 Route::middleware('auth:web')->group(function () {
     Route::get('/token', 'TokenController@index')->name('generate.token');
 });
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
