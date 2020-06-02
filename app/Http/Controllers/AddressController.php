@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
+use App\Address;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class CategoryController extends Controller
+class AddressController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,10 +15,7 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        
-        return Category::when($request->get('with') == 'product-count', function ($q) {
-            return $q->withCount('products');
-        })->paginate(10);
+        return Address::paginate(10);
     }
 
     /**
@@ -30,12 +27,17 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request = $request->validate([
-            'name' => 'required',
-            'slug' => 'nullable',
+            'customer_id' => 'required',
+            'address' => 'nullable',
+            'address2' => 'nullable',
+            'city' => 'nullable',
+            'state' => 'nullable',
+            'postcode' => 'nullable',
+            'country' => 'nullable',
         ]);
 
-        $Category = Category::create($request);
-        return response()->json($Category, Response::HTTP_CREATED);
+        $address = Address::create($request);
+        return response()->json($address, Response::HTTP_CREATED);
     }
 
     /**
@@ -58,7 +60,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $Category = Category::findOrFail($id);
+        $Category = Address::findOrFail($id);
         $Category->update($request->all());
 
         return response()->json($Category, Response::HTTP_OK);
@@ -72,7 +74,7 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        Category::find($id)->delete();
+        Address::find($id)->delete();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
@@ -85,7 +87,7 @@ class CategoryController extends Controller
      */
     public function destroy_bulk(array $id)
     {
-        Category::whereIn($id)->delete();
+        Address::whereIn($id)->delete();
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

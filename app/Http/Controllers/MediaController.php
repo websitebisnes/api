@@ -30,19 +30,13 @@ class MediaController extends Controller
      */
     public function store(Request $request)
     {
-        $request = $request->validate(['file' => 'required']);
+        $request = $request->validate([
+            'file' => 'required|image',
+        ]);
 
         // Upload original image
-        $image_path = Storage::disk('public')->put('asd', $request['file']);
-        $image_path_thumbnail = Storage::disk('public')->put('thumbnail', $request['file']);
+        $image_path = Storage::put('', $request['file']);
 
-        // Make thumbnail as well
-        $thumbnail = ImageIntervention::make(public_path('storage/' . $image_path_thumbnail));
-        if ($thumbnail->width() > 150) {
-            $thumbnail->fit(150);
-        }
-        $thumbnail->save();
-        
         $media = Media::create([
             'filename' => $image_path,
             'file_properties' => [

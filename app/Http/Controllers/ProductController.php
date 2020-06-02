@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Product;
 use App\Http\Resources\ProductCollection;
+use App\Media;
+use App\ProductMedia;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,7 +19,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return Product::with(['category'])
+        return Product::with(['category', 'media'])
             ->latest()
             ->paginate(10);
     }
@@ -31,15 +34,29 @@ class ProductController extends Controller
     {
         $request = $request->validate([
             'name' => 'required',
-            'slug' => 'nullable',
             'price' => 'required',
+            'category_id' => 'required',
+            'slug' => 'required',
             'price_discount' => 'nullable',
             'sku' => 'nullable',
             'stock' => 'required',
-            'category_id' => 'required'
+            'weight' => 'nullable',
+            'height' => 'nullable',
+            'width' => 'nullable',
+            'image_ids' => 'nullable'
         ]);
 
         $product = Product::create($request);
+
+        if (isset($request['image_ids'])) {
+            foreach ($request['image_ids'] as $image_id) {
+                ProductMedia::create([
+                    'product_id' => $product->id,
+                    'media_id' => $image_id
+                ]);
+            }
+        }
+
         return response()->json($product, Response::HTTP_CREATED);
     }
 
@@ -51,6 +68,8 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
+        $product->load(['category', 'media']);
+
         return response()->json($product, Response::HTTP_OK);
     }
 
@@ -63,8 +82,37 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request = $request->validate([
+            'id' => 'required',
+            'name' => 'required',
+            'price' => 'required',
+            'category_id' => 'required',
+            'slug' => 'required',
+            'price_discount' => 'nullable',
+            'sku' => 'nullable',
+            'stock' => 'required',
+            'weight' => 'nullable',
+            'height' => 'nullable',
+            'width' => 'nullable',
+            'image_ids' => 'nullable',
+            'image_ids_delete' => 'nullable'
+        ]);
+
         $product = Product::findOrFail($id);
-        $product->update($request->all());
+        $product->update($request);
+
+        if (isset($request['image_ids_delete']) && is_array($request['image_ids_delete'])) {
+            ProductMedia::where('product_id', $id)->whereIn('media_id', $request['image_ids_delete'])->delete();
+        }
+
+        if (isset($request['image_ids'])) {
+            foreach ($request['image_ids'] as $image_id) {
+                ProductMedia::create([
+                    'product_id' => $product->id,
+                    'media_id' => $image_id
+                ]);
+            }
+        }
 
         return response()->json($product, Response::HTTP_OK);
     }

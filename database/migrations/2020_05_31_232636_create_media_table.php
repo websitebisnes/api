@@ -15,6 +15,7 @@ class CreateMediaTable extends Migration
     {
         Schema::create('media', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->index();
             $table->string('filename');
             $table->unsignedTinyInteger('is_cloud')->nullable();
             $table->json('file_properties')->nullable();

@@ -30,4 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::resource('customers', 'CustomerController');
     Route::delete('customers/delete/bulk', 'CustomerController@destroy_bulk');
+
+    Route::resource('addresses', 'AddressController');
+    Route::delete('addresses/delete/bulk', 'AddressController@destroy_bulk');
 });
