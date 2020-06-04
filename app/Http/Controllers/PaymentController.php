@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
-use App\Product;
-use App\Http\Resources\ProductCollection;
-use App\Media;
-use App\ProductMedia;
+use App\Payment;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ProductController extends Controller
+class PaymentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,8 +15,10 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        return Product::filter($request->all())
-            ->with(['category', 'media'])
+        return Payment::filter($request->all())
+            ->when($request->get('with_order'), function ($q) {
+                return $q->with('order');
+            })
             ->latest()
             ->paginate(10);
     }
@@ -47,7 +45,7 @@ class ProductController extends Controller
             'image_ids' => 'nullable'
         ]);
 
-        $product = Product::create($request);
+        $product = Payment::create($request);
 
         if (isset($request['image_ids'])) {
             foreach ($request['image_ids'] as $image_id) {
@@ -99,7 +97,7 @@ class ProductController extends Controller
             'image_ids_delete' => 'nullable'
         ]);
 
-        $product = Product::findOrFail($id);
+        $product = Payment::findOrFail($id);
         $product->update($request);
 
         if (isset($request['image_ids_delete']) && is_array($request['image_ids_delete'])) {
@@ -126,7 +124,7 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        Product::find($id)->delete();
+        Payment::find($id)->delete();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
@@ -139,7 +137,7 @@ class ProductController extends Controller
      */
     public function destroy_bulk(array $id)
     {
-        Product::whereIn($id)->delete();
+        Payment::whereIn($id)->delete();
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

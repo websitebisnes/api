@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\ProcessImage;
 use App\Media;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 use Intervention\Image\Facades\Image as ImageIntervention;
@@ -38,6 +39,7 @@ class MediaController extends Controller
         $image_path = Storage::put('', $request['file']);
 
         $media = Media::create([
+            'user_id' => Auth::user()->id, // Set user_id manually instead of depending to Observer, because Observer has no "visibility" on $request object
             'filename' => $image_path,
             'file_properties' => [
                 'size' => $request['file']->getSize(),

@@ -4,36 +4,24 @@ namespace App;
 
 use App\Scopes\UserScope;
 use Carbon\Carbon;
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Product extends Model
+class OrderProduct extends Model
 {
-    use SoftDeletes, Filterable;
+    use SoftDeletes;
 
     protected $fillable = [
-        'user_id',
-        'name',
-        'slug',
-        'sku',
+        'id',
+        'order_id',
+        'product_id',
+        'quantity',
         'price',
-        'price_discount',
-        'stock',
-        'category_id',
-        'weight',
-        'height',
-        'width'
-    ];
-
-    protected $with = [
-        'media'
+        'price_discount'
     ];
 
     protected $hidden = [
-        'user_id',
-        'laravel_through_key',
-        'deleted_at'
+        'user_id'
     ];
 
     protected $appends = [
@@ -47,7 +35,6 @@ class Product extends Model
      */
     protected static function booted()
     {
-        static::addGlobalScope(new UserScope);
         static::retrieved(function ($model) {
             $model->created_at = Carbon::createFromTimestamp(strtotime($model->created_at))
                 ->timezone('Asia/Kuala_Lumpur')
@@ -60,14 +47,9 @@ class Product extends Model
      * 
      */
 
-    public function category()
+    public function product()
     {
-        return $this->belongsTo(Category::class);
-    }
-
-    public function media()
-    {
-        return $this->hasManyThrough(Media::class, ProductMedia::class, 'product_id', 'id', 'id', 'media_id');
+        return $this->hasOne(Product::class, 'id', 'product_id')->withTrashed();
     }
 
     /**

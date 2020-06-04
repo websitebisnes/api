@@ -7,11 +7,17 @@ use App\Category;
 use App\Customer;
 use App\Product;
 use App\Media;
+use App\Order;
 use App\Observers\AddressObserver;
 use App\Observers\CategoryObserver;
 use App\Observers\CustomerObserver;
 use App\Observers\MediaObserver;
+use App\Observers\OrderObserver;
+use App\Observers\PaymentObserver;
 use App\Observers\ProductObserver;
+use App\Observers\ShipmentObserver;
+use App\Payment;
+use App\Shipment;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -37,6 +43,9 @@ class AppServiceProvider extends ServiceProvider
         Product::observe(ProductObserver::class);
         Customer::observe(CustomerObserver::class);
         Address::observe(AddressObserver::class);
-        Media::observe(MediaObserver::class);
+        //Media::observe(MediaObserver::class);
+        Order::observe(OrderObserver::class);
+        Payment::observe(PaymentObserver::class);
+        Shipment::observe(ShipmentObserver::class);
     }
 }

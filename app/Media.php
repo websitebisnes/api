@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Scopes\UserScope;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -24,6 +26,8 @@ class Media extends Model
      */
     protected $hidden = [
         'user_id',
+        'deleted_at',
+        'laravel_through_key',
         'deleted_at'
     ];
 
@@ -39,6 +43,21 @@ class Media extends Model
     protected $appends = [
         'thumbnail'
     ];
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        //static::addGlobalScope(new UserScope);
+        static::retrieved(function ($model) {
+            $model->created_at = Carbon::createFromTimestamp(strtotime($model->created_at))
+                ->timezone('Asia/Kuala_Lumpur')
+                ->toDateTimeString();
+        });
+    }
 
     /**
      * Accessor

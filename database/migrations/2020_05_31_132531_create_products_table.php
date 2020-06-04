@@ -20,8 +20,11 @@ class CreateProductsTable extends Migration
             $table->string('slug');
             $table->string('sku')->nullable();
             $table->decimal('price', 6, 2);
-            $table->decimal('price_discount', 6, 2)->nullable();
+            $table->decimal('price_discount', 6, 2)->default(0.00);
             $table->integer('stock')->default(1);
+            $table->decimal('weight', 6, 2)->nullable();
+            $table->decimal('height', 6, 2)->nullable();
+            $table->decimal('width', 6, 2)->nullable();
             $table->unsignedBigInteger('category_id');
             $table->timestamps();
             $table->softDeletes();

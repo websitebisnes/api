@@ -18,13 +18,15 @@ class ProductTableSeeder extends Seeder
         $faker = \Faker\Factory::create();
 
         // And now, let's create a few articles in our database:
-        for ($i = 0; $i < 25; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             Product::create([
-                'name' => $faker->name,
+                'user_id' => 1,
+                'name' => $i+1,
                 'slug' => str_replace(' ', '-', $faker->name),
                 'sku' => 'TDG' . $faker->randomDigit,
                 'price' => $faker->randomDigit,
-                'price_discount' => $faker->randomDigit
+                'price_discount' => $faker->randomDigit,
+                'category_id' => 1
             ]);
         }
     }

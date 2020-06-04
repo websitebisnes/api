@@ -5,15 +5,25 @@ namespace App;
 use App\Scopes\UserScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ProductMedia extends Model
+class Shipment extends Model
 {
-    use SoftDeletes;
-
     protected $fillable = [
-        'product_id',
-        'media_id'
+        'user_id',
+        'order_id',
+        'shipping_status',
+        'shipping_method',
+        'weight',
+        'courier_data'
+    ];
+
+    protected $hidden = [
+        'user_id'
+    ];
+
+    protected $attributes = [
+        'shipping_status' => 1,
+        'shipping_method' => 0,
     ];
 
     /**

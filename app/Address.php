@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Scopes\UserScope;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Address extends Model
@@ -30,5 +31,10 @@ class Address extends Model
     protected static function booted()
     {
         static::addGlobalScope(new UserScope);
+        static::retrieved(function ($model) {
+            $model->created_at = Carbon::createFromTimestamp(strtotime($model->created_at))
+                ->timezone('Asia/Kuala_Lumpur')
+                ->toDateTimeString();
+        });
     }
 }
