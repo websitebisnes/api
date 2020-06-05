@@ -54,5 +54,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('shipments', 'ShipmentController');
     Route::delete('shipments/delete/bulk', 'ShipmentController@destroy_bulk');
 
+    // Courier API
+    Route::resource('couriers', 'CourierController');
+    Route::get('courierslist', 'CourierController@supported_couriers');
+    Route::get('courier/{courier}/{order}', 'CourierController@courier_get_rates');
+
+    // Resource API
     Route::resource('resources', 'ResourceController');
+
+    // Address API
+    Route::get('address/state', 'AddressController@get_states');
+    Route::get('address/city', 'AddressController@get_cities');
 });

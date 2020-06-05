@@ -2,9 +2,10 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreateShipmentsTable extends Migration
+class CreateCouriersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +14,14 @@ class CreateShipmentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('shipments', function (Blueprint $table) {
+        Schema::create('couriers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->index();
-            $table->unsignedBigInteger('order_id')->index();
-            $table->unsignedTinyInteger('shipping_status')->default(1);
-            $table->unsignedTinyInteger('shipping_method')->nullable();
-            $table->decimal('weight', 6, 3)->nullable();
-            $table->json('courier_data')->nullable();
+            $table->integer('courier_id')->index();
+            $table->string('name');
+            $table->json('config')->nullable();
+            $table->json('data')->nullable();
+            $table->tinyInteger('is_enabled')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -33,6 +34,6 @@ class CreateShipmentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('shipments');
+        Schema::dropIfExists('couriers');
     }
 }

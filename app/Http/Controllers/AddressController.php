@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Address;
+use App\Http\Services\AddressService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -89,5 +90,35 @@ class AddressController extends Controller
     {
         Address::whereIn($id)->delete();
         return response()->json(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Get states of Malaysia-ku terchenta!
+     *
+     * @param  array  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function get_states()
+    {
+        $states = AddressService::states();
+        return response()->json($states, Response::HTTP_OK);
+    }
+
+    /**
+     * Get cities of the state
+     * I'm from Terengganu! 
+     * Long time no go back, #covid19 restrictions!
+     *
+     * @param  array  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function get_cities(Request $request)
+    {
+        $request = $request->validate([
+            'state_id' => 'required|numeric|min:1|max:16'
+        ]);
+
+        $states = AddressService::cities($request['state_id']);
+        return response()->json($states, Response::HTTP_OK);
     }
 }

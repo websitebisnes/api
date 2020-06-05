@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Http\Services\AddressService;
 use App\Scopes\UserScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -36,5 +37,13 @@ class Address extends Model
                 ->timezone('Asia/Kuala_Lumpur')
                 ->toDateTimeString();
         });
+    }
+
+    /**
+     * Accessors
+     */
+    public function getStateAttribute($value)
+    {
+        return AddressService::states()[$value];
     }
 }

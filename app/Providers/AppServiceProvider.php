@@ -4,12 +4,14 @@ namespace App\Providers;
 
 use App\Address;
 use App\Category;
+use App\Courier;
 use App\Customer;
 use App\Product;
 use App\Media;
 use App\Order;
 use App\Observers\AddressObserver;
 use App\Observers\CategoryObserver;
+use App\Observers\CourierObserver;
 use App\Observers\CustomerObserver;
 use App\Observers\MediaObserver;
 use App\Observers\OrderObserver;
@@ -47,5 +49,6 @@ class AppServiceProvider extends ServiceProvider
         Order::observe(OrderObserver::class);
         Payment::observe(PaymentObserver::class);
         Shipment::observe(ShipmentObserver::class);
+        Courier::observe(CourierObserver::class);
     }
 }

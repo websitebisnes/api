@@ -22,7 +22,7 @@ class CreateProductsTable extends Migration
             $table->decimal('price', 6, 2);
             $table->decimal('price_discount', 6, 2)->default(0.00);
             $table->integer('stock')->default(1);
-            $table->decimal('weight', 6, 2)->nullable();
+            $table->decimal('weight', 6, 3)->nullable(); // 0.075
             $table->decimal('height', 6, 2)->nullable();
             $table->decimal('width', 6, 2)->nullable();
             $table->unsignedBigInteger('category_id');

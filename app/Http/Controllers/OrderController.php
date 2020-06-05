@@ -55,14 +55,14 @@ class OrderController extends Controller
         // Create customer
         $customer = Customer::create($request['customer']);
 
-        $address = new Address($request);
+        $address = new Address($request['customer']);
         $customer->address()->save($address);
 
         $order = Order::create(collect($request)->put('customer_id', $customer->id)->toArray());
 
-        $amount = 0.00;
+        $amount = $weights = 0.00;
 
-        collect($request['products'])->map(function ($item) use ($order, &$amount) {
+        collect($request['products'])->map(function ($item) use ($order, &$amount, &$weights) {
             $product = Product::findOrFail($item['product_id']);
             OrderProduct::create([
                 'order_id' => $order->id,
@@ -73,6 +73,7 @@ class OrderController extends Controller
             ]);
 
             $amount += ($product->price_discount ?? $product->price) * $item['quantity'];
+            $weights += $product->weight;
         });
 
         $payment_data = collect($request['payment'])->put('amount', $amount)->toArray();
@@ -88,10 +89,8 @@ class OrderController extends Controller
             });
         }
 
-        if (isset($request['shipment'])) {
-            $shipment = new Shipment($request);
-            $order->shipment()->save($shipment);
-        }
+        $shipment = new Shipment(['weight' => $weights]);
+        $order->shipment()->save($shipment);
 
         return response()->json($order, Response::HTTP_CREATED);
     }

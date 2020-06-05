@@ -2,30 +2,32 @@
 
 namespace App;
 
-use App\Http\Services\CourierService;
-use App\Http\Services\ShipmentService;
 use App\Scopes\UserScope;
 use Carbon\Carbon;
+use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Shipment extends Model
+class Courier extends Model
 {
+    use SoftDeletes, Filterable;
+
     protected $fillable = [
         'user_id',
-        'order_id',
-        'shipping_status',
-        'shipping_method',
-        'weight',
-        'courier_data'
+        'courier_id',
+        'name',
+        'config',
+        'data',
+        'is_enabled'
     ];
 
     protected $hidden = [
         'user_id'
     ];
 
-    protected $attributes = [
-        'shipping_status' => 1,
-        'shipping_method' => 0,
+    protected $casts = [
+        'config' => 'array',
+        'data' => 'array'
     ];
 
     /**
@@ -33,7 +35,6 @@ class Shipment extends Model
      *
      * @return void
      */
-
     protected static function booted()
     {
         static::addGlobalScope(new UserScope);
@@ -42,19 +43,5 @@ class Shipment extends Model
                 ->timezone('Asia/Kuala_Lumpur')
                 ->toDateTimeString();
         });
-    }
-
-    /**
-     * Accessors
-     */
-
-    public function getShippingStatusAttribute($value)
-    {
-        return ShipmentService::shipment_status($value);
-    }
-
-    public function getShippingMethodAttribute($value)
-    {
-        return ShipmentService::shipment_method($value);
     }
 }
