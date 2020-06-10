@@ -117,9 +117,7 @@ class CourierService
 
                 // EASYPARTCEL
             case self::COURIER_EASYPARCEL:
-                $response = Http::asForm()->post(self::get_easyparcel_endpoint() . self::COURIER_EASYPARCEL_ENDPOINT_NODE_BALANCE, [
-                    'api' => $courier_data['api_key']
-                ]);
+                $response = self::get_balance($courier_data);
 
                 if ($response->ok()) {
                     $response_data = $response->json();
@@ -152,16 +150,45 @@ class CourierService
         }
     }
 
+    public static function get_balance(array $courier_data)
+    {
+        $response = Http::asForm()->post(self::get_easyparcel_endpoint() . self::COURIER_EASYPARCEL_ENDPOINT_NODE_BALANCE, [
+            'api' => $courier_data['api_key']
+        ]);
+
+        return $response;
+    }
+
     /**
      * Get courier status
      */
-    public static function get_courier_status(Request $request, $courier)
+    public static function get_courier_status(array $courier_data)
     {
-        $request = $request->validate([
-            'courier_id' => 'required'
-        ]);
+        $response = self::get_balance($courier_data);
+        if ($response->ok()) {
+            $response_data = $response->json();
+            if ($response_data['api_status'] == 'Success' && $response_data['error_code'] == 0) {
 
-        self::integrate($request);
+                $courier = Courier::updateOrCreate(
+                    ['courier_id' => $courier_data['courier_id']],
+                    [
+                        'courier_id' => $courier_data['courier_id'],
+                        'name' => self::COURIER_EASYPARCEL_TEXT,
+                        'is_enabled' => 1,
+                        'config' => $courier_data,
+                        'data' => $response_data['wallet'][0] ?? []
+                    ]
+                );
+                return [
+                    'status' => true,
+                    'courier' => $courier
+                ];
+            } else if ($response_data['api_status'] == 'Error') {
+                return [
+                    'error' => $response_data['error_remark']
+                ];
+            }
+        }
     }
 
     /**
@@ -202,12 +229,12 @@ class CourierService
                     $rates = $response_data['result'][0]['rates'];
 
                     $data = [
-                        'rates' => collect($rates)->groupBy('service_detail')
+                        'rates' => collect($rates)->groupBy('service_detail')->toArray()
                     ];
 
-                    return response()->json($data, Response::HTTP_OK);
+                    return $data;
                 } else if ($response_data['api_status'] == 'Error') {
-                    return response()->json($response_data['error_remark'], Response::HTTP_OK);
+                    return $response_data['error_remark'];
                 }
                 break;
         }

@@ -19,8 +19,11 @@ class Product extends Model
         'sku',
         'price',
         'price_discount',
+        'price_wholesale',
         'stock',
+        'deduct_stock',
         'category_id',
+        'pre_order',
         'weight',
         'height',
         'width'
@@ -38,6 +41,10 @@ class Product extends Model
 
     protected $appends = [
         'price_effective'
+    ];
+
+    protected $casts = [
+        'price_wholesale'
     ];
 
     /**
@@ -68,6 +75,16 @@ class Product extends Model
     public function media()
     {
         return $this->hasManyThrough(Media::class, ProductMedia::class, 'product_id', 'id', 'id', 'media_id');
+    }
+
+    public function product_variations()
+    {
+        return $this->hasMany(ProductVariation::class);
+    }
+
+    public function product_detail()
+    {
+        return $this->hasOne(ProductDetail::class);
     }
 
     /**

@@ -94,9 +94,13 @@ class CourierController extends Controller
     /**
      * Get courier status
      */
-    public function courier_get_status(Request $request, Courier $courier)
+    public function courier_get_status(Courier $courier)
     {
-        $courier = CourierService::get_courier_status($request, $courier);
+        $courier_data = [
+            'courier_id' => $courier->id,
+            'api_key' => $courier->config['api_key']
+        ];
+        $courier = CourierService::get_courier_status($courier_data);
 
         return response()->json($courier, Response::HTTP_OK);
     }

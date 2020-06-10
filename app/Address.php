@@ -42,8 +42,22 @@ class Address extends Model
     /**
      * Accessors
      */
+
+    // Country
+    public function getCountryAttribute($value)
+    {
+        return AddressService::countries()[$value];
+    }
+
+    // State
     public function getStateAttribute($value)
     {
         return AddressService::states()[$value];
+    }
+
+    // City
+    public function getCityAttribute($value)
+    {
+        return AddressService::cities($this->attributes['state'])[$value];
     }
 }

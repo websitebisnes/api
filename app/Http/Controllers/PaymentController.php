@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Payment;
+use App\ProductMedia;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 

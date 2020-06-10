@@ -48,7 +48,11 @@ class OrderReceiptController extends Controller
     public function update(Request $request, $order_id)
     {
         $order = Order::findOrFail($order_id);
-        $order->order_receipts()->update(['verified_at' => now()]);
+        $update = $order->order_receipts()->update(['verified_at' => now()]);
+
+        if ($update) {
+            $order->payment()->update(['paid_at' => now()]);
+        }
 
         return response()->json(null, Response::HTTP_OK);
     }

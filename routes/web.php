@@ -17,6 +17,8 @@ Auth::routes();
 Route::get('/', function () {
     return view('welcome');
 });
+// important
+Route::get('/forgot/checkpoint/{user}', 'UserController@recover_checkpoint')->name('recover.checkpoint');
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::middleware('auth:web')->group(function () {

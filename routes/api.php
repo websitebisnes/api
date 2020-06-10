@@ -14,10 +14,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('/login', 'UserController@authenticate');
+Route::post('/register', 'UserController@store');
+Route::post('/forgot', 'UserController@recover');
+Route::post('/forgot', 'UserController@recover');
+Route::get('/users/email', 'UserController@check_email');
+
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+    Route::get('/users', 'UserController@users');
+    Route::post('/users', 'UserController@update');
+    Route::get('/users/subdomain', 'UserController@check_subdomain');
+
+    Route::post('/phone/{action}', 'UserController@phone');
 
     // Product API
     Route::resource('products', 'ProductController');
@@ -57,7 +65,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Courier API
     Route::resource('couriers', 'CourierController');
     Route::get('courierslist', 'CourierController@supported_couriers');
-    Route::get('courier/{courier}/{order}', 'CourierController@courier_get_rates');
+    Route::get('courier/rates/{courier}/{order}', 'CourierController@courier_get_rates');
+    Route::get('courier/status/{courier}', 'CourierController@courier_get_status');
 
     // Resource API
     Route::resource('resources', 'ResourceController');

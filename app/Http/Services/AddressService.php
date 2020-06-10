@@ -4,6 +4,9 @@ namespace App\Http\Services;
 
 class AddressService
 {
+    /**
+     * States of Malaysia
+     */
     const STATE_JOHOR = 1;
     const STATE_JOHOR_TEXT = 'Johor';
 
@@ -51,6 +54,20 @@ class AddressService
 
     const STATE_TERENGGANU = 16;
     const STATE_TERENGGANU_TEXT = 'Terengganu';
+
+    /**
+     * Countries in the world
+     */
+
+    const COUNTRY_MALAYSIA = 1;
+    const COUNTRY_MALAYSIA_TEXT = 'Malaysia';
+
+    static function countries()
+    {
+        return [
+            self::COUNTRY_MALAYSIA => self::COUNTRY_MALAYSIA_TEXT
+        ];
+    }
 
     static function states()
     {

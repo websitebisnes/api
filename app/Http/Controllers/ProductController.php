@@ -20,7 +20,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         return Product::filter($request->all())
-            ->with(['category', 'media'])
+            ->with(['category', 'media', 'product_variations'])
             ->latest()
             ->paginate(10);
     }
@@ -37,14 +37,19 @@ class ProductController extends Controller
             'name' => 'required',
             'price' => 'required',
             'category_id' => 'required',
-            'slug' => 'required',
+            'slug' => 'nullable',
             'price_discount' => 'nullable',
+            'price_discount_start' => 'nullable',
+            'price_discount_end' => 'nullable',
+            'price_wholesale' => 'nullable|array',
             'sku' => 'nullable',
             'stock' => 'required',
+            'stock_empty_action' => 'nullable',
             'weight' => 'nullable',
             'height' => 'nullable',
             'width' => 'nullable',
-            'image_ids' => 'nullable'
+            'image_ids' => 'nullable|array',
+            'variations' => 'nullable|array'
         ]);
 
         $product = Product::create($request);
