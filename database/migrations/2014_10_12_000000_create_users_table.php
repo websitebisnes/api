@@ -19,6 +19,8 @@ class CreateUsersTable extends Migration
             $table->string('verify_code')->nullable();
             $table->tinyInteger('sms_sent')->default(0);
             $table->string('phone')->nullable();
+            $table->timestamp('phone_verified_at')->nullable();
+            $table->tinyInteger('update_phone')->default(0);
             $table->string('name')->nullable();
             $table->string('business_name')->nullable();
             $table->string('subdomain')->nullable()->index();

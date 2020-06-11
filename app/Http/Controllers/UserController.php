@@ -30,7 +30,7 @@ class UserController extends Controller
             $response = [
                 'status' => true,
                 'token' => $token,
-                'user' => collect(Auth::user())->only(['name', 'phone', 'subdomain'])->toArray()
+                'user' => collect(Auth::user())->only(['step', 'sms_sent', 'phone_verified', 'name', 'phone', 'subdomain'])->toArray()
             ];
         } else {
             $response = [
@@ -112,29 +112,58 @@ class UserController extends Controller
     {
 
         switch ($action) {
+                /**
+             * Undo step to 2
+             * Reset sms_sent to 0
+             * Clear phone number
+             * Flag update_phone
+             */
+            case 'change':
+                request()->user()->update([
+                    'step' => 2,
+                    'sms_sent' => 0,
+                    'phone' => null,
+                    'update_phone' => DB::raw('update_phone+1')
+                ]);
+
+                return response()->json(['status' => true], Response::HTTP_OK);
+                break;
+
             case 'verify':
 
                 $request = $request->validate([
-                    'phone' => 'required',
+                    'phone' => 'required|min:10|max:11',
                     'provider' => 'required',
                     'key' => 'required',
                     'secret' => 'required'
                 ]);
 
-                if (request()->user()->sms_sent >= 3) {
+                if (request()->user()->sms_sent >= 5) {
                     return response()->json(['status' => false, 'sms-limit' => true], Response::HTTP_OK);
                 }
 
                 $code = mt_rand(100000, 999999);
 
+
                 if ($request['provider'] == 'nexmo') {
                     config(['nexmo.api_key' => $request['key']]);
                     config(['nexmo.api_secret' => $request['secret']]);
 
+                    $phone = $request['phone'];
+
+                    if (strlen($phone) == 10 || strlen($phone) == 11) {
+                        $start = substr($phone, 0, 1);
+                        if ($start == 0) {
+                            $phone = '6' . $phone;
+                        } else {
+                            return response()->json(['status' => false], Response::HTTP_OK);
+                        }
+                    }
+
                     $nexmo = Nexmo::message()->send([
-                        'to'   => $request['phone'],
+                        'to'   => $phone,
                         'from' => 'WasapOrder.my',
-                        'text' => 'WasapOrder: ' . $code . ' adalah kod pengesahan anda'
+                        'text' => 'WasapOrder: ' . $code . ' adalah kod pengesahan akaun anda'
                     ]);
 
                     $response = $nexmo->getResponseData();
@@ -143,7 +172,7 @@ class UserController extends Controller
                         request()->user()->update([
                             'step' => 3,
                             'sms_sent' => DB::raw('sms_sent+1'),
-                            'phone' => $request['phone'],
+                            'phone' => $phone,
                             'verify_code' => $code
                         ]);
 

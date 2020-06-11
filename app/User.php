@@ -22,6 +22,7 @@ class User extends Authenticatable
         'sms_sent',
         'phone',
         'phone_verified_at',
+        'update_phone',
         'name',
         'business_name',
         'subdomain',
