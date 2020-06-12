@@ -21,9 +21,11 @@ class CreateProductsTable extends Migration
             $table->string('sku')->nullable();
             $table->decimal('price', 6, 2);
             $table->decimal('price_discount', 6, 2)->default(0.00);
+            $table->json('discount_period')->nullable();
             $table->json('price_wholesale')->nullable();
             $table->integer('stock')->default(1);
             $table->tinyInteger('deduct_stock')->default(1);
+            $table->tinyInteger('stock_empty_action')->default(0);
             $table->tinyInteger('pre_order')->default(0);
             $table->decimal('weight', 6, 3)->nullable(); // 0.075
             $table->decimal('height', 6, 2)->nullable();

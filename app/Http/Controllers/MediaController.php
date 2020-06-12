@@ -39,7 +39,7 @@ class MediaController extends Controller
         $image_path = Storage::put('', $request['file']);
 
         $media = Media::create([
-            'user_id' => Auth::user()->id, // Set user_id manually instead of depending to Observer, because Observer has no "visibility" on $request object
+            'user_id' => request()->user()->id, // Set user_id manually instead of depending to Observer, because Observer has no "visibility" on $request object
             'filename' => $image_path,
             'file_properties' => [
                 'size' => $request['file']->getSize(),

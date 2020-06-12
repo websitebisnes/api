@@ -19,9 +19,11 @@ class Product extends Model
         'sku',
         'price',
         'price_discount',
+        'discount_period',
         'price_wholesale',
         'stock',
         'deduct_stock',
+        'stock_empty_action',
         'category_id',
         'pre_order',
         'weight',
@@ -39,12 +41,9 @@ class Product extends Model
         'deleted_at'
     ];
 
-    protected $appends = [
-        'price_effective'
-    ];
-
     protected $casts = [
-        'price_wholesale'
+        'discount_period' => 'array',
+        'price_wholesale' => 'array'
     ];
 
     /**
@@ -90,14 +89,4 @@ class Product extends Model
     /**
      * Accessors
      */
-
-    // custom: price_effective
-    public function getPriceEffectiveAttribute()
-    {
-        if (intval($this->attributes['price_discount'])) {
-            return $this->attributes['price_discount'];
-        }
-
-        return $this->attributes['price'];
-    }
 }

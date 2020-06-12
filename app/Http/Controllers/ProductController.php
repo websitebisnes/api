@@ -6,6 +6,7 @@ use App\Category;
 use App\Product;
 use App\Http\Resources\ProductCollection;
 use App\Media;
+use App\ProductDetail;
 use App\ProductMedia;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,15 +36,16 @@ class ProductController extends Controller
     {
         $request = $request->validate([
             'name' => 'required',
+            'detail' => 'nullable',
             'price' => 'required',
             'category_id' => 'required',
             'slug' => 'nullable',
             'price_discount' => 'nullable',
-            'price_discount_start' => 'nullable',
-            'price_discount_end' => 'nullable',
+            'discount_period' => 'nullable|array',
             'price_wholesale' => 'nullable|array',
             'sku' => 'nullable',
             'stock' => 'required',
+            'deduct_stock' => 'nullable',
             'stock_empty_action' => 'nullable',
             'weight' => 'nullable',
             'height' => 'nullable',
@@ -63,6 +65,13 @@ class ProductController extends Controller
             }
         }
 
+        if (isset($request['detail'])) {
+            ProductDetail::create([
+                'product_id' => $product->id,
+                'detail' => $request['detail']
+            ]);
+        }
+
         return response()->json($product, Response::HTTP_CREATED);
     }
 
@@ -74,7 +83,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product->load(['category', 'media']);
+        $product->load(['category', 'media', 'product_detail']);
 
         return response()->json($product, Response::HTTP_OK);
     }
