@@ -17,20 +17,18 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->index();
             $table->string('name');
+            $table->unsignedBigInteger('category_id');
             $table->string('slug');
             $table->string('sku')->nullable();
             $table->decimal('price', 6, 2);
-            $table->decimal('price_discount', 6, 2)->default(0.00);
-            $table->json('discount_period')->nullable();
-            $table->json('price_wholesale')->nullable();
+            $table->decimal('price_discount', 6, 2)->nullable();
             $table->integer('stock')->default(1);
             $table->tinyInteger('deduct_stock')->default(1);
-            $table->tinyInteger('stock_empty_action')->default(0);
-            $table->tinyInteger('pre_order')->default(0);
-            $table->decimal('weight', 6, 3)->nullable(); // 0.075
-            $table->decimal('height', 6, 2)->nullable();
-            $table->decimal('width', 6, 2)->nullable();
-            $table->unsignedBigInteger('category_id');
+            $table->tinyInteger('stock_status')->default(1);
+            $table->json('price_data')->nullable();
+            $table->json('attributes')->nullable();
+            $table->json('stock_data')->nullable();
+            $table->json('variations')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

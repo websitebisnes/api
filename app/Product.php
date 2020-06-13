@@ -15,20 +15,18 @@ class Product extends Model
     protected $fillable = [
         'user_id',
         'name',
+        'category_id',
         'slug',
         'sku',
         'price',
         'price_discount',
-        'discount_period',
-        'price_wholesale',
         'stock',
+        'stock_status',
         'deduct_stock',
-        'stock_empty_action',
-        'category_id',
-        'pre_order',
-        'weight',
-        'height',
-        'width'
+        'price_data',
+        'attributes',
+        'stock_data',
+        'variations'
     ];
 
     protected $with = [
@@ -42,8 +40,10 @@ class Product extends Model
     ];
 
     protected $casts = [
-        'discount_period' => 'array',
-        'price_wholesale' => 'array'
+        'price_data' => 'array',
+        'attributes' => 'array',
+        'stock_data' => 'array',
+        'variations' => 'array'
     ];
 
     /**

@@ -23,7 +23,6 @@ class ProductMedia extends Model
      */
     protected static function booted()
     {
-        static::addGlobalScope(new UserScope);
         static::retrieved(function ($model) {
             $model->created_at = Carbon::createFromTimestamp(strtotime($model->created_at))
                 ->timezone('Asia/Kuala_Lumpur')
