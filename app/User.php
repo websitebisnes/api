@@ -26,6 +26,7 @@ class User extends Authenticatable
         'name',
         'business_name',
         'subdomain',
+        'theme_id',
         'email',
         'password',
         'token'

@@ -16,7 +16,9 @@ class CreateProductDetailsTable extends Migration
         Schema::create('product_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id')->index();
-            $table->text('detail')->nullable();
+            $table->text('delta')->nullable();
+            $table->text('text')->nullable();
+            $table->text('html')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

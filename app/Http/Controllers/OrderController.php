@@ -13,6 +13,7 @@ use App\Shipment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\OrderStoreRequest;
+use App\Http\Services\OrderService;
 use Symfony\Component\HttpFoundation\Response;
 
 class OrderController extends Controller
@@ -64,16 +65,19 @@ class OrderController extends Controller
 
         collect($request['products'])->map(function ($item) use ($order, &$amount, &$weights) {
             $product = Product::findOrFail($item['product_id']);
+            $weight = OrderService::standardize_weight($product);
+
             OrderProduct::create([
                 'order_id' => $order->id,
                 'product_id' => $product->id,
                 'quantity' => $item['quantity'],
                 'price' => $product->price,
-                'price_discount' => $product->price_discount
+                'price_discount' => $product->price_discount,
+                'weight' => $weight
             ]);
 
             $amount += ($product->price_discount ?? $product->price) * $item['quantity'];
-            $weights += $product->weight;
+            $weights += $weight;
         });
 
         $payment_data = collect($request['payment'])->put('amount', $amount)->toArray();

@@ -40,6 +40,8 @@ class CourierController extends Controller
 
         if ($courier['status']) {
             return response()->json($courier, Response::HTTP_CREATED);
+        } else {
+            return response()->json([], Response::HTTP_NO_CONTENT);
         }
     }
 

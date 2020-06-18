@@ -8,6 +8,8 @@ class ProductDetail extends Model
 {
     protected $fillable = [
         'product_id',
-        'detail'
+        'delta',
+        'text',
+        'html'
     ];
 }

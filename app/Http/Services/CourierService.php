@@ -199,7 +199,7 @@ class CourierService
 
         $order->load(['customer']);
 
-        switch ($courier->id) {
+        switch ($courier->courier_id) {
             case self::COURIER_EASYPARCEL:
                 $post_data = [
                     'api' => $courier->config['api_key'],
@@ -228,7 +228,13 @@ class CourierService
                 if ($response_data['api_status'] == 'Success' && $response_data['error_code'] == 0) {
                     $rates = $response_data['result'][0]['rates'];
 
+                    $balance = self::get_balance(['api_key' => $courier->config['api_key']]);
+                    if ($balance['api_status'] == 'Success' && $response_data['error_code'] == 0) {
+                        $account = $balance['wallet'][0];
+                    }
+
                     $data = [
+                        'account' => $account ?? null,
                         'rates' => collect($rates)->groupBy('service_detail')->toArray()
                     ];
 

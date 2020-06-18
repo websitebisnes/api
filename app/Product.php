@@ -30,7 +30,8 @@ class Product extends Model
     ];
 
     protected $with = [
-        'media'
+        'media',
+        'product_detail'
     ];
 
     protected $hidden = [

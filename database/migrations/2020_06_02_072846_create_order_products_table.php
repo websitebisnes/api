@@ -17,9 +17,10 @@ class CreateOrderProductsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('order_id')->index();
             $table->unsignedBigInteger('product_id')->index();
-            $table->integer('quantity');
-            $table->decimal('price', 6, 2);
-            $table->decimal('price_discount', 6, 2);
+            $table->integer('quantity')->nullable();
+            $table->decimal('price', 6, 2)->nullable();
+            $table->decimal('price_discount', 6, 2)->nullable();
+            $table->decimal('weight', 6, 3)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -38,20 +38,17 @@ class ProcessImage implements ShouldQueue
     {
         // Get original image and compress
         $image = ImageIntervention::make(public_path('storage/' . $this->image_path));
-        if ($image->width() > 1024) {
-            $image->fit(1024);
-        }
+
+        // Main
+        $image->resize(800, 800);
         $image_stream = $image->stream('jpg', 85);
 
-        // Make thumbnail
-        if ($image->width() > 150) {
-            $image->fit(150);
-        }
-
-        $thumbnail_stream = $image->stream('jpg', 100);
+        // Small
+        $image->resize(320, 320);
+        $small_stream = $image->stream('jpg', 100);
 
         $s3_upload = Storage::disk('s3')->put($this->image_path, $image_stream, 'public');
-        Storage::disk('s3')->put('thumbnail/' . $this->image_path, $thumbnail_stream, 'public');
+        Storage::disk('s3')->put('thumbnail/' . $this->image_path, $small_stream, 'public');
 
         // And update image cloud_url
         if ($s3_upload) {

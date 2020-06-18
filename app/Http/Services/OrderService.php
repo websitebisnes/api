@@ -2,6 +2,8 @@
 
 namespace App\Http\Services;
 
+use App\Product;
+
 class OrderService
 {
 
@@ -37,5 +39,21 @@ class OrderService
                 return '';
                 break;
         }
+    }
+
+    /**
+     * Standardize weight for shipping, in KG
+     */
+    public static function standardize_weight(Product $product)
+    {
+        if (empty($product->attributes) or empty($product->attributes['weight'])) {
+            return 0.00;
+        }
+
+        if ($product->attributes['weight']['unit'] == 'g') {
+            return $product->attributes['weight']['value'] / 1000;
+        }
+
+        return $product->attributes['weight']['value'];
     }
 }

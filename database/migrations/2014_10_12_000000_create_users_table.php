@@ -24,6 +24,7 @@ class CreateUsersTable extends Migration
             $table->string('name')->nullable();
             $table->string('business_name')->nullable();
             $table->string('subdomain')->nullable()->index();
+            $table->tinyInteger('theme_id')->default(1);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

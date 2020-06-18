@@ -251,4 +251,22 @@ class UserController extends Controller
 
         return response()->json(['status' => $status], Response::HTTP_OK);
     }
+
+    // Check subdomain existence
+    public function get_user_by_subdomain(Request $request)
+    {
+        $request = $request->validate([
+            'subdomain' => 'required|max:30'
+        ]);
+
+        $user = User::where('subdomain', $request['subdomain'])
+        ->select('subdomain', 'business_name', 'email', 'phone', 'theme_id', 'token')
+        ->first();
+
+        if ($user) {
+            return response()->json($user, Response::HTTP_OK);
+        }
+
+        return response()->json([], Response::HTTP_OK);
+    }
 }

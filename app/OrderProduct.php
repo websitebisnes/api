@@ -17,7 +17,8 @@ class OrderProduct extends Model
         'product_id',
         'quantity',
         'price',
-        'price_discount'
+        'price_discount',
+        'weight'
     ];
 
     protected $hidden = [
