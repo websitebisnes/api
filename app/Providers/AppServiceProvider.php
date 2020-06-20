@@ -3,13 +3,18 @@
 namespace App\Providers;
 
 use App\Address;
+use App\Cart;
 use App\Category;
 use App\Courier;
 use App\Customer;
 use App\Product;
 use App\Media;
 use App\Order;
+use App\Payment;
+use App\Shipment;
+
 use App\Observers\AddressObserver;
+use App\Observers\CartObserver;
 use App\Observers\CategoryObserver;
 use App\Observers\CourierObserver;
 use App\Observers\CustomerObserver;
@@ -18,8 +23,6 @@ use App\Observers\OrderObserver;
 use App\Observers\PaymentObserver;
 use App\Observers\ProductObserver;
 use App\Observers\ShipmentObserver;
-use App\Payment;
-use App\Shipment;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -50,5 +53,6 @@ class AppServiceProvider extends ServiceProvider
         Payment::observe(PaymentObserver::class);
         Shipment::observe(ShipmentObserver::class);
         Courier::observe(CourierObserver::class);
+        Cart::observe(CartObserver::class);
     }
 }

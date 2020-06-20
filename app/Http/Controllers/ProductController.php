@@ -77,6 +77,8 @@ class ProductController extends Controller
             'stock_data.notify.email' => 'nullable',
             'stock_data.notify.telegram' => 'nullable',
             'stock_data.empty_action' => 'nullable',
+            'stock_data.purchase_limit_minimum' => 'nullable',
+            'stock_data.purchase_limit_maximum' => 'nullable',
 
             'variations' => 'nullable|array',
             'image_ids' => 'nullable|array',
@@ -258,6 +260,8 @@ class ProductController extends Controller
             'stock_data.notify.email' => 'nullable',
             'stock_data.notify.telegram' => 'nullable',
             'stock_data.empty_action' => 'nullable',
+            'stock_data.purchase_limit_minimum' => 'nullable',
+            'stock_data.purchase_limit_maximum' => 'nullable',
 
             'variations' => 'nullable|array',
             'image_ids' => 'nullable|array',

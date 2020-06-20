@@ -32,6 +32,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('products/delete/bulk', 'ProductController@destroy_bulk');
     Route::post('/products/check', 'ProductController@check');
 
+    // Cart API
+    Route::resource('carts', 'CartController');
+
+    // Product Promotion API
+    Route::resource('promotions', 'PromotionController');
+    Route::get('promotions/helper/types', 'PromotionController@types');
+
     // Category API
     Route::resource('categories', 'CategoryController');
     Route::delete('categories/delete/bulk', 'CategoryController@destroy_bulk');
