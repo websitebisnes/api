@@ -33,20 +33,21 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request = $request->validate([
-            'name' => 'required',
+            'name' => 'required|min:10',
+            'detail_short' => 'required|min:10|max:100',
+            'price' => 'required',
+            'stock_status' => 'required',
+            'stock' => 'required',
 
             'detail' => 'nullable|array',
             'detail.delta' => 'nullable',
             'detail.text' => 'nullable',
             'detail.html' => 'nullable',
 
-            'category_id' => 'required',
-            'price' => 'required',
+            'category_id' => 'nullable',
             'price_discount' => 'nullable',
             'slug' => 'nullable',
             'sku' => 'nullable',
-            'stock_status' => 'required',
-            'stock' => 'required',
             'deduct_stock' => 'nullable',
 
             'price_data' => 'nullable|array',
@@ -88,19 +89,18 @@ class ProductController extends Controller
         $request['deduct_stock'] = !isset($request['deduct_stock']) ? 0 : 1;
 
         // #2 detail
-        if ($request['detail'] == '{"ops":[{"insert":"\n"}]}') {
+        if (!empty($request['detail']['delta']) && $request['detail']['delta'] == '{"ops":[{"insert":"\n"}]}') {
             unset($request['detail']);
-        }
-
-        // #3 If wholesale min,max,price is empty, remove
-        foreach ($request['price_data']['price_wholesale'] as $key => $item) {
-            if (empty($item['minimum']) or empty($item['maximum']) or empty($item['price'])) {
-                unset($request['price_data']['price_wholesale'][$key]);
-            }
         }
 
         // #4 Transfrom all wholesale prices
         if (!empty($request['price_data']['price_wholesale'])) {
+            foreach ($request['price_data']['price_wholesale'] as $key => $item) {
+                if (empty($item['minimum']) or empty($item['maximum']) or empty($item['price'])) {
+                    unset($request['price_data']['price_wholesale'][$key]);
+                }
+            }
+
             $request['price_data']['price_wholesale'] = collect($request['price_data']['price_wholesale'])->transform(function ($item, $key) use ($request) {
                 return [
                     'minimum' => $item['minimum'],
@@ -137,7 +137,7 @@ class ProductController extends Controller
         $request['price'] = str_replace(['RM', ' '], '', $request['price']);
 
         // #9 Price discount
-        $request['price_discount'] = str_replace(['RM', ' '], '', $request['price_discount']);
+        $request['price_discount'] = !empty($request['price_discount']) ? str_replace(['RM', ' '], '', $request['price_discount']) : null;
 
         // #10 Slug
         if (!isset($request['slug'])) {
@@ -216,20 +216,21 @@ class ProductController extends Controller
     {
         $request = $request->validate([
             'id' => 'required',
-            'name' => 'required',
+            'name' => 'required|min:10',
+            'detail_short' => 'required|min:10|max:100',
+            'price' => 'required',
+            'stock_status' => 'required',
+            'stock' => 'required',
 
             'detail' => 'nullable|array',
             'detail.delta' => 'nullable',
             'detail.text' => 'nullable',
             'detail.html' => 'nullable',
 
-            'category_id' => 'required',
-            'price' => 'required',
+            'category_id' => 'nullable',
             'price_discount' => 'nullable',
             'slug' => 'nullable',
             'sku' => 'nullable',
-            'stock_status' => 'required',
-            'stock' => 'required',
             'deduct_stock' => 'nullable',
 
             'price_data' => 'nullable|array',

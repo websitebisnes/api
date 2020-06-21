@@ -17,11 +17,12 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->index();
             $table->string('name');
-            $table->unsignedBigInteger('category_id');
-            $table->string('slug');
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->string('slug')->nullable();
             $table->string('sku')->nullable();
             $table->decimal('price', 6, 2);
             $table->decimal('price_discount', 6, 2)->nullable();
+            $table->string('detail_short')->nullable();
             $table->integer('stock')->default(1);
             $table->tinyInteger('deduct_stock')->default(1);
             $table->tinyInteger('stock_status')->default(1);
