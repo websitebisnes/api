@@ -34,7 +34,7 @@ class CustomerController extends Controller
             'last_name' => 'required',
             'phone_number' => 'required',
             'email' => 'nullable',
-            'password' => 'nullable',
+            'password' => 'nullable|confirmed|min:8',
 
             'address' => 'nullable',
             'address2' => 'nullable',
@@ -111,5 +111,28 @@ class CustomerController extends Controller
     {
         Customer::whereIn($id)->delete();
         return response()->json(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Check customer email existence
+     *
+     * @param  array  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function check_email(Request $request)
+    {
+        $request = $request->validate([
+            'email' => 'required'
+        ]);
+
+        $exist = Customer::where('email', $request['email'])->exists();
+
+        if ($exist) {
+            $status = ['status' => false];
+        } else {
+            $status = ['status' => true];
+        }
+
+        return response()->json($status, Response::HTTP_OK);
     }
 }

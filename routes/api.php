@@ -50,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Customer API
     Route::resource('customers', 'CustomerController');
     Route::delete('customers/delete/bulk', 'CustomerController@destroy_bulk');
+    Route::post('customers/check/email', 'CustomerController@check_email');
 
     // Address API
     Route::resource('addresses', 'AddressController');
