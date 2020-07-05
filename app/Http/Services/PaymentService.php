@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Http\Resources\Resources;
+use App\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,8 +20,8 @@ class PaymentService
     const PAYMENT_STATUS_UNPAID_TEXT = 'Belum dibayar';
 
     // Payment Status: Paid
-    const ORDER_STATUS_COMPLETED = 2;
-    const ORDER_STATUS_COMPLETED_TEXT = 'Dibayar';
+    const PAYMENT_STATUS_PAID = 2;
+    const PAYMENT_STATUS_PAID_TEXT = 'Dibayar';
 
     // Payment Method: Bank Transfer
     const ORDER_METHOD_BANK_TRANSFER = 1;
@@ -42,8 +43,8 @@ class PaymentService
                 return self::PAYMENT_STATUS_UNPAID_TEXT;
                 break;
 
-            case self::ORDER_STATUS_COMPLETED:
-                return self::ORDER_STATUS_COMPLETED_TEXT;
+            case self::PAYMENT_STATUS_PAID:
+                return self::PAYMENT_STATUS_PAID_TEXT;
                 break;
 
             default:
@@ -72,5 +73,18 @@ class PaymentService
                 return '';
                 break;
         }
+    }
+
+    /**
+     * Payment
+     */
+
+    public static function total_payment($payment_status, $month = null): float
+    {
+        return Payment::where('payment_status', $payment_status)
+            ->when($month, function ($q) use ($month) {
+                return $q->whereMonth('payment_verified_date', $month);
+            })
+            ->sum('amount');
     }
 }

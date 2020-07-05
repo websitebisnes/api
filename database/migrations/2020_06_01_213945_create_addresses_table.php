@@ -22,7 +22,7 @@ class CreateAddressesTable extends Migration
             $table->string('city')->nullable();
             $table->string('state')->nullable();
             $table->string('postcode')->nullable();
-            $table->integer('country')->nullable();
+            $table->integer('country')->nullable()->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Http\Services\CourierService;
+use App\Http\Services\PaymentService;
 use App\Http\Services\ShipmentService;
 use App\Scopes\UserScope;
 use Carbon\Carbon;
@@ -42,6 +43,24 @@ class Shipment extends Model
                 ->timezone('Asia/Kuala_Lumpur')
                 ->toDateTimeString();
         });
+    }
+
+    /**
+     * Relationships
+     */
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
+
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class, 'order_id', 'order_id', Order::class);
+    }
+
+    public function payment_paid()
+    {
+        return $this->belongsTo(Payment::class, 'order_id', 'order_id', Order::class)->where('payment_status', '=', PaymentService::PAYMENT_STATUS_PAID);
     }
 
     /**

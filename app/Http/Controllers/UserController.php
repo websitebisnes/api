@@ -20,25 +20,19 @@ class UserController extends Controller
     {
         $request = $request->validate([
             'email' => 'required|email|max:100',
-            'password' => 'required|max:20'
+            'password' => 'required|min:8|max:20'
         ]);
 
         if (Auth::attempt($request)) {
-            // Authentication passed...
-            $token = encrypt(Auth::user()->token);
+            $response = [
+                'token' => encrypt(Auth::user()->token),
+                'user' => collect(Auth::user())->except('token')
+            ];
 
-            $response = [
-                'status' => true,
-                'token' => $token,
-                'user' => collect(Auth::user())->only(['step', 'sms_sent', 'phone_verified', 'name', 'phone', 'subdomain'])->toArray()
-            ];
-        } else {
-            $response = [
-                'status' => false,
-            ];
+            return response()->json($response, Response::HTTP_OK);
         }
 
-        return response()->json($response, Response::HTTP_OK);
+        return response()->json(null, Response::HTTP_CONFLICT);
     }
 
     public function recover(Request $request)
@@ -78,22 +72,17 @@ class UserController extends Controller
         return response()->json($response, Response::HTTP_OK);
     }
 
-    // Get self
-    public function users()
-    {
-        return response()->json(request()->user(), Response::HTTP_OK);
-    }
-
     // Register
     public function store(Request $request)
     {
         $request = $request->validate([
-            'email' => 'required|max:100'
+            'email' => 'required|max:100',
+            'password' => 'required|min:8|max:20'
         ]);
 
         $user = User::create([
             'email' => $request['email'],
-            'password' => Hash::make(Str::random(10))
+            'password' => Hash::make($request['password'])
         ]);
 
         $token = $user->createToken('token');
@@ -260,8 +249,8 @@ class UserController extends Controller
         ]);
 
         $user = User::where('subdomain', $request['subdomain'])
-        ->select('subdomain', 'business_name', 'email', 'phone', 'theme_id', 'token')
-        ->first();
+            ->select('subdomain', 'business_name', 'email', 'phone', 'theme_id', 'token')
+            ->first();
 
         if ($user) {
             return response()->json($user, Response::HTTP_OK);

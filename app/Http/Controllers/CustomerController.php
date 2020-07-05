@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Address;
 use App\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 
 class CustomerController extends Controller
@@ -43,6 +44,8 @@ class CustomerController extends Controller
             'postcode' => 'nullable',
             'country' => 'nullable',
         ]);
+
+        $request['password'] = Hash::make($request['password']);
 
         $customer = Customer::create($request);
 
@@ -134,5 +137,34 @@ class CustomerController extends Controller
         }
 
         return response()->json($status, Response::HTTP_OK);
+    }
+
+    /**
+     * Authenticate Customer
+     *
+     * @param  array  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function authenticate(Request $request)
+    {
+        $request = $request->validate([
+            'email' => 'required',
+            'password' => 'required|min:8'
+        ]);
+
+        $customer = Customer::where('email', $request['email'])->first();
+
+        if (!$customer) {
+            return response()->json(['status' => false], Response::HTTP_OK);
+        }
+
+        if (Hash::check($request['password'], $customer->password)) {
+            return response()->json([
+                'status' => true,
+                'customer' => collect($customer)->except('password')->toArray()
+            ], Response::HTTP_OK);
+        }
+
+        return response()->json(['status' => false], Response::HTTP_OK);
     }
 }

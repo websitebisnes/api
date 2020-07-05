@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,15 +21,18 @@ Route::get('/users/subdomain', 'UserController@check_subdomain');
 Route::post('/users/subdomain', 'UserController@get_user_by_subdomain');
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/users', 'UserController@users');
-    Route::post('/users', 'UserController@update');
+    Route::get('users', 'UserController@users');
+    Route::post('users', 'UserController@update');
 
-    Route::post('/phone/{action}', 'UserController@phone');
+    Route::post('phone/{action}', 'UserController@phone');
+
+    // Dashboard API
+    Route::get('dashboard/status', 'DashboardController@status');
 
     // Product API
     Route::resource('products', 'ProductController');
     Route::delete('products/delete/bulk', 'ProductController@destroy_bulk');
-    Route::post('/products/check', 'ProductController@check');
+    Route::post('products/check', 'ProductController@check');
 
     // Cart API
     Route::resource('carts', 'CartController');
@@ -51,6 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('customers', 'CustomerController');
     Route::delete('customers/delete/bulk', 'CustomerController@destroy_bulk');
     Route::post('customers/check/email', 'CustomerController@check_email');
+    Route::post('customers/check/authenticate', 'CustomerController@authenticate');
 
     // Address API
     Route::resource('addresses', 'AddressController');
